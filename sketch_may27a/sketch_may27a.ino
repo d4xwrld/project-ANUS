@@ -1,6 +1,8 @@
+#include <Servo.h>
 #include <ESP8266WiFi.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoJson.h>
+
 
 // Replace with your network credentials
 const char* ssid = "Esp8266";
@@ -14,6 +16,7 @@ unsigned long lastTimeBotRan; // last time the bot ran
 
 // Initialize Telegram Chat ID
 #define CHAT_ID "5499264854"
+Servo s1;
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(BOTtoken, client);
@@ -21,6 +24,7 @@ UniversalTelegramBot bot(BOTtoken, client);
 // Set up function
 void setup() {
   Serial.begin(9600);
+  s1.attach(0);
   WiFi.begin(ssid, password);
 
   // Wait for connection
@@ -59,29 +63,31 @@ void handleNewMessages(int numNewMessages) {
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
 
-  for (int i=0; i<numNewMessages; i++) {
+  for (int i = 0; i < numNewMessages; i++) {
     String chat_id = String(bot.messages[i].chat_id);
+    String text = bot.messages[i].text;
 
     if (chat_id != CHAT_ID) {
       bot.sendMessage(chat_id, "Unauthorized user", "");
       continue;
     }
 
-    String text = bot.messages[i].text;
-
     if (text == "/start" && !welcomeSent) {
-      String welcome = "Welcome, " + bot.messages[i].from_name + ".\n";
-      welcome += "Belum ada CMD!";
+      String welcome = "Welcome, " + bot.messages[i].from_name + " to Project:ANUS.\nAuto Nutrition System\n";
+      welcome += "Gunakan /feed untuk memberi makan!";
       bot.sendMessage(CHAT_ID, welcome, "");
       welcomeSent = true;
     }
 
-    // if (text == "/led_on") {
-    //   bot.sendMessage(CHAT_ID, "LED is ON", "");
-    // }
-
-    // if (text == "/led_off") {
-    //   bot.sendMessage(CHAT_ID, "LED is OFF", "");
-    // }
+    if (text == "/feed") {
+      s1.write(0);  
+      delay(1000);  
+      s1.write(180);  
+      delay(1000);  
+      s1.write(0);  
+      delay(1000);  
+      Serial.println("Servo moved");
+      bot.sendMessage(CHAT_ID, "Berhasil!", "");
+    }
   }
 }
