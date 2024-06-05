@@ -5,17 +5,17 @@
 
 
 // Replace with your network credentials
-const char* ssid = "Esp8266";
-const char* password = "dowhatuwill";
+const char* ssid = "SSID-NAME";
+const char* password = "HOTSPOT-PASSWORD";
 
 const long botRequestDelay = 1000; // delay between bot requests in milliseconds
 unsigned long lastTimeBotRan; // last time the bot ran
 
 // Initialize Telegram BOT
-#define BOTtoken "6636575835:AAHh2X5plj7oBfRNLwzyTsnmuLUuyxAgSSM"
+#define BOTtoken "TOKEN-BOT"
 
 // Initialize Telegram Chat ID
-#define CHAT_ID "5499264854"
+#define CHAT_ID "CHAT-ID"
 Servo s1;
 
 WiFiClientSecure client;
